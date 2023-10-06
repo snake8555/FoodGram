@@ -35,7 +35,7 @@ services:
     volumes: 
       - static:/frontend_static 
   nginx:
-    image: nginx:1.19.3
+    build: ../infra/
     container_name: foodgram_nginx
     ports:
       - 8000:80
