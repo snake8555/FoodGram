@@ -37,7 +37,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='invalid secret key')
 # Забыл сохранить когда отправлял на ревью =)
 DEBUG = os.getenv('DEBUG', default=False)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', os.getenv('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
 
 
 # Application definition
