@@ -33,6 +33,7 @@ services:
     depends_on:
       - backend
 
+
   gateway:
     image: snake85/foodgram_nginx
     container_name: foodgram_nginx

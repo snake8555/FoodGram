@@ -1,6 +1,6 @@
 version: '3.3'
 volumes:
-  pg_data7:
+  pg_data111:
   static:
   media:
 
@@ -11,7 +11,7 @@ services:
     env_file: ../.env
     container_name: foodgram_db
     volumes:
-      - pg_data7:/var/lib/postgresql/data
+      - pg_data111:/var/lib/postgresql/data
 
   backend:
     build:

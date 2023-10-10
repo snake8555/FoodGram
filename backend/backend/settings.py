@@ -21,26 +21,16 @@ env = environ.Env(
     DEBUG=(bool, False)
 )
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Take environment variables from .env file
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+SECRET_KEY = os.getenv('SECRET_KEY', default='None')
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', default='invalid secret key')
+DEBUG = env('DEBUG')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# Забыл сохранить когда отправлял на ревью =)
-DEBUG = os.getenv('DEBUG', default=False)
-
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', os.getenv('ALLOWED_HOSTS')]
-
-
-# Application definition
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yafoodgram.ddns.net']
+# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -67,18 +57,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-# ]
-
-# CORS_URLS_REGEX = r'^/api/.*$'
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -101,9 +85,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -115,9 +96,6 @@ DATABASES = {
     }
 }
 AUTH_USER_MODEL = 'users.User'
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -169,10 +147,7 @@ DJOSER = {
 }
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'UTC'
 
@@ -183,16 +158,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'collected_static'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media/'
+MEDIA_ROOT = '/media'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
