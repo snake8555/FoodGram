@@ -229,4 +229,3 @@ class RecipePostSerializer(serializers.ModelSerializer):
             recipe,
             context={'request': self.context.get('request')}
         ).data
-    
