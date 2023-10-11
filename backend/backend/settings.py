@@ -30,7 +30,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', default='None')
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yafoodgram.ddns.net']
-# ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split()
 
 INSTALLED_APPS = [
     'django.contrib.admin',

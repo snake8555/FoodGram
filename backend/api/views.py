@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status, viewsets
@@ -162,36 +163,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response({'errors': 'Рецепт уже удален!'},
                         status=status.HTTP_400_BAD_REQUEST)
 
+    def create_shopping_cart(self, ingredients):
+        shopping_list = 'Купить в магазине:'
+        for ingredient in ingredients:
+            shopping_list += (
+                f"\n{ingredient['ingredient__name']} "
+                f"({ingredient['ingredient__measurement_unit']}) - "
+                f"{ingredient['ingredient_value']}")
+        file = 'shopping_list.txt'
+        response = HttpResponse(shopping_list, content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename="{file}.txt"'
+        return response
+
     @action(
         detail=False,
         methods=['get'],
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        user = request.user
-        shopping_cart_recipes = user.cart_set.all()
-        ingredients_dict = {}
-
-        for recipe in shopping_cart_recipes:
-            amount_ingredients = AmountIngredient.objects.filter(
-                recipe=recipe.recipe
-            )
-            for amount_ingredient in amount_ingredients:
-                ingredient = amount_ingredient.ingredients
-                ingredient_name = ingredient.name
-                ingredient_amount = amount_ingredient.amount
-
-                if ingredient_name in ingredients_dict:
-                    ingredients_dict[ingredient_name] += ingredient_amount
-                else:
-                    ingredients_dict[ingredient_name] = ingredient_amount
-
-        content = ''
-        for ingredient, amount in ingredients_dict.items():
-            content += f"{ingredient} - {amount}\n"
-
-        response = HttpResponse(content, content_type='text/plain')
-        response['Content-Disposition'] = (
-            f'attachment; filename="{request.user.username}"'
-        )
-        return response
+        ingredients = AmountIngredient.objects.filter(
+            recipe__shoppingcart__user=request.user
+        ).order_by('ingredient__name').values(
+            'ingredient__name', 'ingredient__measurement_unit'
+        ).annotate(ingredient_value=Sum('amount'))
+        if len(ingredients) == 0:
+            return Response({'error': 'Список покупок пуст'
+                             }, status=status.HTTP_400_BAD_REQUEST)
+        return self.create_shopping_cart(ingredients)

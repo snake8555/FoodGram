@@ -76,28 +76,56 @@ class AmountIngredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент для рецепта'
         verbose_name_plural = 'Ингредиенты для рецептов'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredients'],
+                name='ingredienttorecipe_unique'
+            )
+        ]
 
 
-class Favorite(models.Model):
-    """Модель избранного."""
+class UserRecipe(models.Model):
+    """Абстрактная модель для избранного и списка покупок."""
+
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='пользователь')
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
                                verbose_name='рецепт')
 
     class Meta:
-        ordering = ['id']
+        abstract = True
+        ordering = ('-id',)
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='%(class)s_unique'
+            )
+        ]
+
+    def __str__(self):
+        return f'Пользователь:{self.user.username}, рецепт: {self.recipe.name}'
+
+
+class Favorite(UserRecipe):
+    """Модель избранного."""
+
+    class Meta(UserRecipe.Meta):
+        default_related_name = 'favorite'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
+        ordering = ('-id',)
+
+    def __str__(self):
+        return f'{self.user} добавил "{self.recipe}" в Избранное'
 
 
-class Cart(models.Model):
+class Cart(UserRecipe):
     """Модель списка покупок."""
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             verbose_name='пользователь')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
-                               verbose_name='рецепт')
 
-    class Meta:
-        verbose_name = 'Покупка'
-        verbose_name_plural = 'Покупки'
+    class Meta(UserRecipe.Meta):
+        default_related_name = 'cart'
+        verbose_name = 'Список покупок'
+        verbose_name_plural = 'Список покупок'
+        ordering = ('-id',)
+
+    def __str__(self):
+        return f'{self.user} добавил "{self.recipe}" в список покупок'
