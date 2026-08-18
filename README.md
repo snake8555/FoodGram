@@ -1,93 +1,107 @@
-<div align=center>
-  
-  # [Foodgram](https://yafoodgram.ddns.net/) продуктовый помощник
-  
+<div align="center">
 
-## Описание проекта
+# Foodgram — Recipe Assistant
 
+</div>
 
-Foodgram - онлайн-сервис, представляющий собой продуктового помощника как для начинающих кулинаров, так и для опытных гурманов. В рамках этого сервиса пользователи могут делиться своими рецептами, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список избранного, а также скачивать сводный список продуктов в формате .pdf перед походом в магазин для приготовления выбранных блюд.
+## Project Description
 
+Foodgram is an online recipe-sharing service designed for both beginner cooks and experienced food enthusiasts.
 
-## Подготовка сервера и деплой проекта
+Users can share their recipes, subscribe to other authors, add favorite recipes to their favorites, add recipes to a shopping cart, and download a combined shopping list in `.txt` format before going to the store.
 
-1. Создать директорию foodgram/ в домашней директории сервера.
+## Server Setup and Project Deployment
 
-2. В корне папки foodgram поместить файл .env, заполнить его по шаблону
+### 1. Create the project directory
 
-  ```env
-    POSTGRES_USER=...
-    POSTGRES_PASSWORD=...
-    POSTGRES_DB=...
-    DB_HOST=...
-    DB_PORT=...
+Create a `foodgram/` directory in the server's home directory.
 
-    SECRET_KEY=
-    DEBUG=False
-    ALLOWED_HOSTS=
+### 2. Create the `.env` file
+
+Create a `.env` file in the root of the `foodgram` directory and configure it using the following template:
+
+```env
+POSTGRES_USER=...
+POSTGRES_PASSWORD=...
+POSTGRES_DB=...
+DB_HOST=...
+DB_PORT=...
+
+SECRET_KEY=...
+DEBUG=False
+ALLOWED_HOSTS=...
 ```
 
-4. Установить Nginx и настроить конфигурацию так, чтобы все запросы шли в контейнеры на порт 9090.
+### 3. Install and configure Nginx
 
-    ```bash
-        sudo apt install nginx -y 
-        sudo nano etc/nginx/sites-enabled/default
-    ```
-    
-    Пример конфигурация nginx
-    ```bash
-        server {
-            server_name <Ваш IP> <Домен вашего сайта>;
-            server_tokens off;
-            client_max_body_size 20M;
-        
-            location / {
-                proxy_set_header Host $http_host;
-                proxy_pass http://127.0.0.1:9000;
-        }
-    ```
-    
-    > При необходимости настройте SSL-соединение
-
-5. Установить docker и docker-compose
-   
-``` bash
-    sudo apt update
-    sudo apt install curl
-    curl -fSL https://get.docker.com -o get-docker.sh
-    sudo sh ./get-docker.sh
-    sudo apt-get install docker-compose-plugin     
-```
-
-4. Добавить в Secrets GitHub Actions данного репозитория на GitHub переменные окружения
-
-``` env
-    DOCKERHUB_USERNAME=<имя пользователя DockerHub>
-    DOCKERHUB_PASSWORD=<пароль от DockerHub>
-    
-    SSH_USERNAME=<username для подключения к удаленному серверу>
-    SSH_HOST=<ip сервера>
-    SSH_PASSPHRASE=<пароль для сервера, если он установлен>
-    SSH_KEY=<ваш приватный SSH-ключ>
-    
-    TELEGRAM_ME_ID=<id вашего Телеграм-аккаунта>
-    TELEGRAM_BOT_TOKEN=<токен вашего бота>
-```
-5. Запустить workflow проекта выполнив команды:
+Install Nginx:
 
 ```bash
-  git add .
-  git commit -m ''
-  git push
+sudo apt install nginx -y
+sudo nano /etc/nginx/sites-enabled/default
 ```
 
-Доступ в админку:
+Example Nginx configuration:
+
+```nginx
+server {
+    server_name <YOUR_IP> <YOUR_DOMAIN>;
+    server_tokens off;
+    client_max_body_size 20M;
+
+    location / {
+        proxy_set_header Host $http_host;
+        proxy_pass http://127.0.0.1:9000;
+    }
+}
+```
+
+Configure SSL if necessary.
+
+### 4. Install Docker and Docker Compose
 
 ```bash
-   email - admin@mail.com
-   пароль - admin123
+sudo apt update
+sudo apt install curl
+curl -fSL https://get.docker.com -o get-docker.sh
+sudo sh ./get-docker.sh
+sudo apt-get install docker-compose-plugin
 ```
 
-#### Автор
+### 5. Configure GitHub Actions Secrets
 
-Журов Владимир
+Add the following environment variables to the GitHub Actions Secrets of this repository:
+
+```env
+DOCKERHUB_USERNAME=<your Docker Hub username>
+DOCKERHUB_PASSWORD=<your Docker Hub password>
+
+SSH_USERNAME=<remote server username>
+SSH_HOST=<server IP address>
+SSH_PASSPHRASE=<server password, if configured>
+SSH_KEY=<your private SSH key>
+
+TELEGRAM_ME_ID=<your Telegram account ID>
+TELEGRAM_BOT_TOKEN=<your Telegram bot token>
+```
+
+### 6. Run the project workflow
+
+Push the changes to the repository to start the workflow:
+
+```bash
+git add .
+git commit -m "Deploy project"
+git push
+```
+
+## Admin Panel Access
+
+```text
+Email: admin@mail.com
+Password: admin123
+```
+
+## Author
+
+Vladimir Zhurov
